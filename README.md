@@ -1,6 +1,6 @@
 # **PEACE FM LIVE**
 
-<img src="C:\StudioProjects\prtv_stream\assets\image\prtv.png" alt="prtv" style="zoom:60%;" align="center"/>
+<img src="https://www.businesslist.com.ng/img/ng/r/1504097393-46-plateau-radio-peace-fm.png" alt="prtv" style="zoom:60%;" align="center"/>
 
 The **PEACE FM LIVE** application is a live streaming service that allows you to
 listen to the **Plateau Radio Television (PRTV)** radio station on your Android device. **PEACE FM** is a subdivision of PRTV that broadcasts on the FM frequency 90.5 MHz. The application is currently available for free download on the Google Play Store.

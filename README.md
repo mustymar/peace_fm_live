@@ -1,16 +1,14 @@
-# prtv_stream
+##PEACE FM LIVE
 
-Cross platform application for streeaming PRTV on the internet
+The PEACE FM LIVE application is a live streaming service that allows you to 
+listen to the Plateau Radio Television (PRTV) radio station on your Android device. PEACE FM is a subdivision of PRTV that broadcasts on the FM frequency 90.5 MHz. The application is currently available for free download on the Google Play Store.
 
-## Getting Started
+Here are some additional details about the PEACE FM LIVE application:
 
-This project is a starting point for a Flutter application.
+It allows you to listen to the live broadcast of PEACE FM in real time.
+You can also listen to previously recorded shows and podcasts.
+The application has a user-friendly interface that makes it easy to find and listen to your favorite shows.
+It is compatible with most Android devices.
+If you are a fan of PEACE FM or if you are looking for a way to listen to live radio on your Android device, then the PEACE FM LIVE application is a great option for you.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+I hope this is helpful! Let me know if you have any other questions.

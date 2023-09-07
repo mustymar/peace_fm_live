@@ -13,7 +13,7 @@ class PRTVSplash extends StatefulWidget {
 }
 
 class _PRTVSplashState extends State<PRTVSplash> {
-  InternetStatus? _connectionStatus;
+  InternetStatus? _connectionStatus = InternetStatus.connected;
   StreamSubscription<InternetStatus>? _subscription;
   @override
   void initState() {
@@ -21,6 +21,7 @@ class _PRTVSplashState extends State<PRTVSplash> {
     _connect();
   }
 
+  void streamInit() {}
   void _connect() => _subscription =
           InternetConnection().onStatusChange.listen((InternetStatus status) {
         setState(() => _connectionStatus = status);
@@ -35,7 +36,6 @@ class _PRTVSplashState extends State<PRTVSplash> {
           // The internet is now disconnected
           return;
         }
-        ;
       });
 
   @override

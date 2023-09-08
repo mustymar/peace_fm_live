@@ -38,7 +38,14 @@ dependencies:
   webview_flutter: ^4.2.2
   radio_player: ^1.4.2
   internet_connection_checker_plus: ^2.0.0
-  assets_audio_player: ^3.1.1
+  assets_audio_player:
+    git:
+      url: https://github.com/florent37/Flutter-AssetsAudioPlayer.git
+      ref: master
+  dio: ^5.3.2
+  fluttertoast: ^8.2.2
+  provider: ^6.0.5
+  
 
 dev_dependencies:
   flutter_test:

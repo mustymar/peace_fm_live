@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:prtv_stream/include/menu.items.inc.dart';
-import 'package:radio_player/radio_player.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
-import '../include/colors.inc.dart';
-import 'about.scr.dart';
-import 'webview.scr.dart';
+import '../include/stream.barrel.inc.dart';
 
 class PRTVStream extends StatefulWidget {
   const PRTVStream({super.key});
@@ -15,31 +10,17 @@ class PRTVStream extends StatefulWidget {
 }
 
 class _PRTVStreamState extends State<PRTVStream> {
-  RadioPlayer radioPlayer = RadioPlayer();
-  bool isPlaying = false;
-  void startStream() {
-    radioPlayer.setChannel(
-        title: "PEACE FM LIVE",
-        url:
-            "https://freeuk25.listen2myradio.com/live.mp3?typeportmount=s1_10795_stream_336205374",
-        // url: "http://65.108.124.70:7380/okinfm",
-        imagePath: "assets/image/prtv_stream.png");
-    radioPlayer.play();
-    radioPlayer.stateStream.listen((value) {
-      setState(() {
-        isPlaying = value;
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    startStream();
+    AppStream().streamInit(getCurrentStreamUrlGlobal);
+    print("Is this the global link: $getCurrentStreamUrlGlobal");
   }
 
   @override
   Widget build(BuildContext context) {
+    var connectionStatus = Provider.of<AppState>(context).connectionStatus;
+
     return WillPopScope(
       onWillPop: () async {
         showDialog(context: context, builder: (_) => dialogFn());
@@ -70,10 +51,35 @@ class _PRTVStreamState extends State<PRTVStream> {
                     },
                   ),
                   const Expanded(
-                    child: SizedBox(
-                      height: 0,
-                    ),
+                    child: SizedBox(),
                   ),
+                  PlayerBuilder.isBuffering(
+                    player: assetsAudioPlayer,
+                    builder: (context, isBuffering) {
+                      if (isBuffering) {
+                        return const Icon(Icons.cell_tower, color: Colors.red);
+                      } else {
+                        return const Icon(Icons.cell_tower,
+                            color: AppColor.primaryColor); //empty
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Builder(
+                    builder: (BuildContext context) {
+                      InternetConnection().onStatusChange.listen((status) {
+                        Provider.of<AppState>(context, listen: false)
+                            .connectionStatusFn(status);
+                      });
+                      if (connectionStatus == InternetStatus.connected) {
+                        return const Icon(Icons.wifi,
+                            color: AppColor.primaryColor);
+                      } else {
+                        return const Icon(Icons.wifi_off, color: Colors.red);
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 10),
                   PopupMenuButton<Items>(
                       color: AppColor.primaryColor,
                       onSelected: (item) => onSelected(context, item),
@@ -82,7 +88,6 @@ class _PRTVStreamState extends State<PRTVStream> {
                           ]),
                 ],
               ),
-
               Container(
                 height: 200,
                 width: 200,
@@ -112,29 +117,45 @@ class _PRTVStreamState extends State<PRTVStream> {
                     fontWeight: FontWeight.w900,
                     color: Colors.white),
               ),
-              //Control Buttons
               Container(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).padding.top * 2.5),
-                child: Center(
-                  child: IconButton.outlined(
-                    style: ButtonStyle(
-                        side: MaterialStateProperty.all<BorderSide>(
-                            const BorderSide(color: AppColor.primaryColor)),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)))),
-                    onPressed: () =>
-                        isPlaying ? radioPlayer.stop() : radioPlayer.play(),
-                    splashColor: AppColor.primaryColor,
-                    color: AppColor.primaryColor,
-                    icon: Icon(
-                      isPlaying
-                          ? Icons.stop_outlined
-                          : Icons.play_arrow_outlined,
-                      size: 64,
-                    ),
-                  ),
+                child: PlayerBuilder.isPlaying(
+                  player: assetsAudioPlayer,
+                  builder: (context, isPlaying) {
+                    Widget container = Center(
+                      child: IconButton.outlined(
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all<BorderSide>(
+                                const BorderSide(color: AppColor.primaryColor)),
+                            shape: MaterialStateProperty.all<OutlinedBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)))),
+                        onPressed: () async {
+                          try {
+                            if (isPlaying) {
+                              assetsAudioPlayer.pause();
+                            } else {
+                              await AppStream().streamAudioGet(context);
+                              assetsAudioPlayer.play();
+                            }
+                          } catch (t) {
+                            String errorMessage = t.toString();
+                            Fluttertoast.showToast(msg: errorMessage);
+                          }
+                        },
+                        splashColor: AppColor.primaryColor,
+                        color: AppColor.primaryColor,
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.stop_outlined
+                              : Icons.play_arrow_outlined,
+                          size: 64,
+                        ),
+                      ),
+                    );
+                    return container;
+                  },
                 ),
               ),
             ],

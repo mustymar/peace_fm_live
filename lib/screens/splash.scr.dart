@@ -1,9 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:prtv_stream/include/colors.inc.dart';
-import 'package:prtv_stream/screens/stream.scr.dart';
+
+import '../include/app.state.inc.dart';
+import '../include/app.stream.inc.dart';
+
+AppStream appStream = AppStream();
 
 class PRTVSplash extends StatefulWidget {
   const PRTVSplash({super.key});
@@ -13,39 +16,15 @@ class PRTVSplash extends StatefulWidget {
 }
 
 class _PRTVSplashState extends State<PRTVSplash> {
-  InternetStatus? _connectionStatus = InternetStatus.connected;
-  StreamSubscription<InternetStatus>? _subscription;
   @override
   void initState() {
     super.initState();
-    _connect();
-  }
-
-  void streamInit() {}
-  void _connect() => _subscription =
-          InternetConnection().onStatusChange.listen((InternetStatus status) {
-        setState(() => _connectionStatus = status);
-        if (_connectionStatus == InternetStatus.connected) {
-          // The internet is now connected
-
-          Timer(const Duration(seconds: 5), () {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const PRTVStream()));
-          });
-        } else if (_connectionStatus == InternetStatus.disconnected) {
-          // The internet is now disconnected
-          return;
-        }
-      });
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
+    appStream.checkConnect(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<AppState>();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -75,7 +54,7 @@ class _PRTVSplashState extends State<PRTVSplash> {
                   fontSize: 30,
                   color: AppColor.primaryColor),
             ),
-            _connectionStatus == InternetStatus.connected
+            appState.connectionStatus == InternetStatus.connected
                 ? const Padding(
                     padding: EdgeInsets.all(50.0),
                     child: CircularProgressIndicator(
